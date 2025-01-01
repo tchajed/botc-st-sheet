@@ -20,6 +20,7 @@ import { GlobalStyle } from "styles/global_style";
 import { IndexStyles } from "styles/index_style";
 import { theme } from "theme";
 import { differenceInDays } from "date-fns";
+import React from "react";
 
 const BtnSpan = styled.span`
   padding: 0.4rem 0.5rem;
@@ -249,12 +250,16 @@ export function App(props: { scriptsFile: ScriptsFile }): JSX.Element {
   const baseThree = scripts.filter((s) => BaseThree.includes(s.pk));
   baseThree.sort((s1, s2) => s1.pk - s2.pk);
 
-  const custom = scripts.filter((s) => {
-    if (BaseThree.includes(s.pk)) {
-      return false;
-    }
-    return authenticated || !s.allAmne;
-  });
+  const custom = React.useMemo(
+    () =>
+      scripts.filter((s) => {
+        if (BaseThree.includes(s.pk)) {
+          return false;
+        }
+        return authenticated || !s.allAmne;
+      }),
+    [scripts, authenticated],
+  );
 
   function removePrefix(s: string, prefix: string): string {
     if (s.startsWith(prefix)) {
